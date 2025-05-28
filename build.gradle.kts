@@ -52,6 +52,10 @@ val projectVersion = "1.1.0"
 group = projectGroup
 version = projectVersion
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     implementation("org.slf4j:slf4j-api:2.0.17")
     // Handle external module dependencies differently based on whether we're in standalone or multi-project mode
@@ -114,31 +118,6 @@ publishing {
                     connection.set("scm:git:https://github.com/Bevel-Software/code-to-knowledge-graph.git")
                     developerConnection.set("scm:git:ssh://git@github.com:Bevel-Software/code-to-knowledge-graph.git")
                     url.set("https://github.com/Bevel-Software/code-to-knowledge-graph")
-                }
-
-                // Add explicit dependencies to the POM
-                withXml {
-                    val root = asNode()
-                    val depsNode = root.children().find { (it as groovy.util.Node).name() == "dependencies" } as groovy.util.Node? 
-                        ?: root.appendNode("dependencies")
-                    
-                    // Add vscode submodule as a direct dependency
-                    val vscodeNode = depsNode.appendNode("dependency")
-                    vscodeNode.appendNode("groupId", projectGroup)
-                    vscodeNode.appendNode("artifactId", "vscode")
-                    vscodeNode.appendNode("version", projectVersion)
-                    
-                    // Add providers submodule
-                    val providersNode = depsNode.appendNode("dependency")
-                    providersNode.appendNode("groupId", projectGroup)
-                    providersNode.appendNode("artifactId", "providers")
-                    providersNode.appendNode("version", projectVersion)
-                    
-                    // Add regex submodule
-                    val regexNode = depsNode.appendNode("dependency")
-                    regexNode.appendNode("groupId", projectGroup)
-                    regexNode.appendNode("artifactId", "regex")
-                    regexNode.appendNode("version", projectVersion)
                 }
             }
         }

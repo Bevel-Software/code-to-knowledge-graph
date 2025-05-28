@@ -10,7 +10,7 @@ import software.bevel.code_to_knowledge_graph.vscode.languageSpecs.GeneralLangua
 import software.bevel.code_to_knowledge_graph.vscode.languageSpecs.VsCodeLanguageSpecification
 import software.bevel.file_system_domain.BevelFilesPathResolver
 import software.bevel.file_system_domain.FileWalker
-import software.bevel.file_system_domain.services.CachedIoFileHandler
+import software.bevel.code_to_knowledge_graph.providers.CachedIoFileHandler
 import software.bevel.file_system_domain.services.FileHandler
 import software.bevel.file_system_domain.web.LocalCommunicationInterface
 import software.bevel.graph_domain.GraphMergingService
