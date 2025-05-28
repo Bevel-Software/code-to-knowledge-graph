@@ -47,7 +47,7 @@ licenseReport {
 
 // Define group and version based on root project or use defaults for standalone
 val projectGroup = "software.bevel"
-val projectVersion = "1.1.0"
+val projectVersion = "1.1.2"
 
 group = projectGroup
 version = projectVersion
@@ -57,16 +57,16 @@ repositories {
 }
 
 dependencies {
-    implementation("org.slf4j:slf4j-api:2.0.17")
+    api("org.slf4j:slf4j-api:2.0.17")
     // Handle external module dependencies differently based on whether we're in standalone or multi-project mode
     if (rootProject.name == "code-to-knowledge-graph") {
         //api(project(":antlr"))
         //api(project(":regex"))
         api(project(":providers"))
         api(project(":vscode"))
-        api("$projectGroup:file-system-domain:$projectVersion")
-        api("$projectGroup:graph-domain:$projectVersion")
-        implementation("$projectGroup:networking:$projectVersion")
+        api("$projectGroup:file-system-domain:1.1.0")
+        api("$projectGroup:graph-domain:1.1.0")
+        api("$projectGroup:networking:1.1.0")
     } else {
         //api(project(":code-to-knowledge-graph:antlr"))
         //api(project(":code-to-knowledge-graph:regex"))
@@ -74,7 +74,7 @@ dependencies {
         api(project(":code-to-knowledge-graph:vscode"))
         api(project(":file-system-domain"))
         api(project(":graph-domain"))
-        implementation(project(":networking"))
+        api(project(":networking"))
     }
 }
 
@@ -82,6 +82,37 @@ dependencies {
 java {
     withJavadocJar()
     withSourcesJar()
+}
+
+// Configure main jar to include classes from subprojects
+tasks.named<Jar>("jar") {
+    // Include classes from submodules
+    if (rootProject.name == "code-to-knowledge-graph") {
+        // For standalone mode
+        project(":providers").let { subproject ->
+            from(subproject.sourceSets.main.get().output)
+        }
+        project(":regex").let { subproject ->
+            from(subproject.sourceSets.main.get().output)
+        }
+        project(":vscode").let { subproject ->
+            from(subproject.sourceSets.main.get().output)
+        }
+    } else {
+        // For multi-project mode
+        project(":code-to-knowledge-graph:providers").let { subproject ->
+            from(subproject.sourceSets.main.get().output)
+        }
+        project(":code-to-knowledge-graph:regex").let { subproject ->
+            from(subproject.sourceSets.main.get().output)
+        }
+        project(":code-to-knowledge-graph:vscode").let { subproject ->
+            from(subproject.sourceSets.main.get().output)
+        }
+    }
+    
+    // Avoid duplicate files issues
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 publishing {
@@ -151,8 +182,8 @@ subprojects {
             // Handle external module dependencies differently based on whether we're in standalone or multi-project mode
             if (rootProject.name == "code-to-knowledge-graph") {
                 // In standalone mode, use the published Maven artifacts
-                api("$projectGroup:file-system-domain:$projectVersion")
-                api("$projectGroup:graph-domain:$projectVersion")
+                api("$projectGroup:file-system-domain:1.1.0")
+                api("$projectGroup:graph-domain:1.1.0")
             } else {
                 // In multi-project mode, use the project dependencies
                 api(project(":file-system-domain"))

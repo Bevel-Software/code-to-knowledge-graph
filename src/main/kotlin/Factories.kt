@@ -1,3 +1,5 @@
+package software.bevel.code_to_knowledge_graph
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import software.bevel.code_to_knowledge_graph.providers.GitignoreAwareFileWalker
@@ -37,6 +39,7 @@ import kotlin.io.path.pathString
  * @param connectionVersion The version string for the VSCode connection protocol; defaults to "1.0.0"
  * @return A configured VsCodeParser instance ready to parse the specified project
  */
+@JvmOverloads
 fun createVsCodeParser(
     projectPath: String,
     commsChannel: LocalCommunicationInterface? = null,
@@ -77,6 +80,7 @@ fun createVsCodeParser(
  * @param graphMergingService Service for merging parsed data into a knowledge graph; defaults to [GraphMergingServiceImpl]
  * @return A configured VsCodeGraphUpdater instance ready to update knowledge graphs
  */
+@JvmOverloads
 fun createVsCodeGraphUpdater(
     projectPath: String,
     vsCodeParser: IntermediateFileParser = createVsCodeParser(projectPath),
@@ -99,6 +103,7 @@ fun createVsCodeGraphUpdater(
  * @param logger Logger for capturing parse events and errors; defaults to a logger for VsCodeConnectionParser class
  * @return A configured VsCodeConnectionParser instance ready to parse connections in the specified project
  */
+@JvmOverloads
 fun createVsCodeConnectionParser(
     projectPath: String,
     commsChannel: LocalCommunicationInterface? = null,
