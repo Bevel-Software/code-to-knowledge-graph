@@ -20,6 +20,7 @@
 
 This project is your gateway to transforming complex source code into structured, queryable knowledge graphs. By leveraging semantic analysis (primarily via VS Code Language Server capabilities and historically through ANTLR), we extract meaningful information about your code's entities, relationships, and architecture. Dive deep into your codebase like never before!
 
+
 ## 🚀 Key Features
 
 *   **Knowledge Graph Generation:** Converts source code from various languages into a rich graph structure.
@@ -29,7 +30,6 @@ This project is your gateway to transforming complex source code into structured
 *   **File System Awareness:** Includes tools for intelligently walking file trees, respecting `.gitignore` patterns.
 *   **MinHashing for Similarity:** Implements MinHash for locality-sensitive hashing, useful for detecting near-duplicate code snippets or tracking semantic drift.
 *   **(Historical) ANTLR-based Parsing & Querying:** Features a sophisticated, though now **deprecated**, ANTLR-based parsing pipeline with a custom AST Query Language (`bevel_ast_ql`) for fine-grained code analysis.
-*   **Codebase Combiner Utility:** Handy scripts to bundle your entire project (or a summary) into a single text file for easy sharing or LLM analysis.
 
 ## 🤔 Why Code-to-Knowledge-Graph?
 
@@ -105,59 +105,55 @@ The project is organized into several key modules:
     ```
     This will compile the Kotlin/Java code, run tests, and produce necessary artifacts.
 
+
+**Replace it with this:**
+
 ## 🚀 Usage
 
-The primary way to use the knowledge graph generation capabilities is programmatically by integrating the `vscode` module's parsers into your own applications or analysis scripts.
+The primary way to leverage the knowledge graph generation capabilities is by integrating the parsers into your own applications or analysis scripts. The `Factories.kt` file (in `src/main/kotlin/`) provides convenient factory methods to instantiate the core components for the `vscode` module.
+
+Here's a conceptual example of how you might use these factories:
 
 ```kotlin
-// Example (Conceptual - actual API may vary)
-// import software.bevel.code_to_knowledge_graph.vscode.VsCodeParser
-// import software.bevel.code_to_knowledge_graph.vscode.VsCodeConnectionParser
-// ...
+// Example (Conceptual - actual API may vary, check Factories.kt for precise signatures)
+import createVsCodeParser
+import createVsCodeConnectionParser
+// ... other necessary imports from graph_domain, file_system_domain, etc.
 
-// val projectPath = "/path/to/your/codebase"
-// val vsCodeParser = VsCodeParser(...)
-// val connectionParser = VsCodeConnectionParser(...)
+fun main() {
+    val projectPath = "/path/to/your/codebase" // Ensure this project has a .bevel/port file if not providing commsChannel
 
-// val initialGraph = vsCodeParser.parseProject(projectPath)
-// val finalGraph = connectionParser.enhanceGraph(initialGraph)
+    // 1. Create a VsCodeParser instance using the factory
+    //    This handles setting up dependencies like communication channels, file handlers, etc.
+    val vsCodeParser = createVsCodeParser(projectPath = projectPath)
 
-// Now you have 'finalGraph' to work with!
+    // 2. Parse the project to get an initial graph of nodes
+    //    The parseToGraphBuilder method returns a GraphBuilder instance.
+    val graphBuilder = vsCodeParser.parseToGraphBuilder(listOf(projectPath))
+
+    // 3. Optionally, create a VsCodeConnectionParser to infer more connections
+    val vsCodeConnectionParser = createVsCodeConnectionParser(
+        projectPath = projectPath,
+        // languageSpecification and fileHandler might be shared or re-instantiated
+        // commsChannel can be reused if vsCodeParser created one, or a new one can be made
+    )
+
+    // 4. Build the final graph and then enhance it with more connections
+    //    Note: The exact methods and flow for connection parsing might vary.
+    //    The VsCodeConnectionParser typically operates on a Graphlike object.
+    var graph = graphBuilder.build(projectPath)
+    graph = vsCodeConnectionParser.addOutboundConnections(graph)
+    // graph = vsCodeConnectionParser.addInboundConnections(graph) // Or similar methods
+
+    // Now you have 'graph' (a Graphlike object) to work with!
+    // You can query its nodes and connections.
+    println("Parsed ${graph.nodes.size} nodes and ${graph.connections.getAllConnections().size} connections.")
+}
 ```
-
-For development and testing the `vscode` module, you'll typically need a way to simulate or directly interact with VS Code's LSP. The `BatchProcessor` and related classes in `vscode/src/main/kotlin/` hint at a mechanism for this.
-
-### ⚠️ Important Note on the ANTLR Module
-
-As mentioned, the `antlr/` module and its associated `bevel_ast_ql` query language are **currently deprecated and non-functional** due to a major refactor. The project's primary focus for parsing is now the `vscode/` module.
-
-The documentation found in:
-*   `docs/queries.md`
-*   `docs/programming_constructs.md`
-
-...describes how to use the `bevel_ast_ql` system. While this system is not active, the concepts and query examples might still provide valuable insights into thinking about code-to-graph transformations, should you wish to explore or revive parts of that system.
 
 <!-- TODO: INSERT GIF SHOWING A QUERY ON THE GENERATED GRAPH -->
 ![Querying the Knowledge Graph](https://i.imgur.com/XhPzIGP.gif)
 
-
-### Codebase Combiner Utility
-
-This project also includes a handy set of scripts to bundle your (or any) codebase into a single text file, respecting `.gitignore`. This is excellent for feeding context to LLMs.
-
-*   **Full Combine (respects .gitignore):**
-    ```bash
-    ./combine_codebase.sh path/to/your/project output_combined.txt
-    ```
-*   **Compact Combine (first 50 lines per file, respects .gitignore):**
-    ```bash
-    ./combine_compact.sh path/to/your/project output_compact.txt
-    ```
-*   **Summary View (file structure + first 10 lines per file, respects .gitignore):**
-    ```bash
-    ./combine_summary.sh path/to/your/project output_summary.txt
-    ```
-    (Requires Python dependencies: `pip3 install -r requirements.txt`)
 
 ## 🤝 Contributing
 
