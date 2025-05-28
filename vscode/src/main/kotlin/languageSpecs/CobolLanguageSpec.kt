@@ -14,7 +14,6 @@ import software.bevel.graph_domain.graph.ConnectionType
 import software.bevel.graph_domain.graph.Graphlike
 import software.bevel.graph_domain.graph.NodeType
 import software.bevel.graph_domain.tokenizers.IdentifierTokenizer
-import software.bevel.graph_domain.tokenizers.RegexIdentifierTokenizer
 import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeNodeBuilder
 import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeRange
 import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeSymbolKind
@@ -27,16 +26,16 @@ import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeSymbolKind
  *
  * @property fileHandler An instance of [FileHandler] for file system operations.
  * @property vsCodeNodeBuilder An instance of [VsCodeNodeBuilder] used to create graph nodes from VS Code symbols.
+ * @property tokenizer An [IdentifierTokenizer] used to extract potential symbols from COBOL code.
  * @property supportedFileEndings A list of file extensions recognized as COBOL files (e.g., ".cbl", ".cpy").
  *                                Defaults to a comprehensive list of common COBOL extensions.
- * @property tokenizer An [IdentifierTokenizer] used to extract potential symbols from COBOL code. Defaults to [RegexIdentifierTokenizer].
  * @param logger An SLF4J [Logger] instance for logging messages specific to COBOL processing.
  */
 class CobolLanguageSpec(
     val fileHandler: FileHandler,
     override val vsCodeNodeBuilder: VsCodeNodeBuilder,
+    val tokenizer: IdentifierTokenizer,
     override var supportedFileEndings: List<String> = listOf(".cbl", ".cob", ".ccp", ".cobol", ".cpy", ".cpb", ".cblcpy", ".mf"),
-    val tokenizer: IdentifierTokenizer = RegexIdentifierTokenizer(),
     private val logger: Logger = LoggerFactory.getLogger(CobolLanguageSpec::class.java)
 ): VsCodeLanguageSpecification {
 

@@ -1,13 +1,10 @@
 package software.bevel.code_to_knowledge_graph.vscode.languageSpecs
 
-import software.bevel.graph_domain.graph.Connection
-import software.bevel.file_system_domain.LCPosition
 import software.bevel.graph_domain.graph.builder.GraphBuilder
 import software.bevel.graph_domain.graph.builder.NodeBuilder
 import software.bevel.graph_domain.parsing.PotentialSymbol
 import software.bevel.file_system_domain.services.FileHandler
 import software.bevel.graph_domain.tokenizers.IdentifierTokenizer
-import software.bevel.graph_domain.tokenizers.RegexIdentifierTokenizer
 import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeNodeBuilder
 import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeRange
 import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeSymbolKind
@@ -19,16 +16,15 @@ import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeSymbolKind
  *
  * @property fileHandler An instance of [FileHandler] for file system operations.
  * @property vsCodeNodeBuilder An instance of [VsCodeNodeBuilder] used to create graph nodes from VS Code symbols.
+ * @param tokenizer An [IdentifierTokenizer] used to extract potential symbols from Kotlin code.
  * @property supportedFileEndings A list of file extensions recognized as Kotlin files (e.g., ".kt", ".kts").
  *                                Defaults to `listOf(".kt", ".kts")`.
- * @param tokenizer An [IdentifierTokenizer] used to extract potential symbols from Kotlin code.
- *                  Defaults to [RegexIdentifierTokenizer].
  */
 class KotlinLanguageSpec(
     val fileHandler: FileHandler,
     override val vsCodeNodeBuilder: VsCodeNodeBuilder,
+    private val tokenizer: IdentifierTokenizer,
     override var supportedFileEndings: List<String> = listOf(".kt", ".kts"),
-    private val tokenizer: IdentifierTokenizer = RegexIdentifierTokenizer()
 ): VsCodeLanguageSpecification {
 
     /**

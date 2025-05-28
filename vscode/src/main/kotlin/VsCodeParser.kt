@@ -2,9 +2,6 @@ package software.bevel.code_to_knowledge_graph.vscode
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import software.bevel.code_to_knowledge_graph.providers.GitignoreAwareFileWalker
-import software.bevel.code_to_knowledge_graph.providers.MinHasher
 import software.bevel.graph_domain.*
 import software.bevel.graph_domain.graph.*
 import software.bevel.graph_domain.graph.builder.*
@@ -12,16 +9,11 @@ import software.bevel.graph_domain.parsing.Parser
 import software.bevel.file_system_domain.services.FileHandler
 import software.bevel.file_system_domain.web.LocalCommunicationInterface
 import software.bevel.code_to_knowledge_graph.vscode.data.*
-import software.bevel.code_to_knowledge_graph.vscode.languageSpecs.GeneralLanguageSpecification
 import software.bevel.code_to_knowledge_graph.vscode.languageSpecs.VsCodeLanguageSpecification
 import software.bevel.file_system_domain.*
-import software.bevel.file_system_domain.services.CachedIoFileHandler
-import software.bevel.graph_domain.hashing.LocalitySensitiveHasher
-import software.bevel.networking.RestCommunicationInterfaceCreator
-import software.bevel.networking.web_client.JavaNetReactorMonoWebClient
+import software.bevel.graph_domain.parsing.IntermediateFileParser
 import kotlin.io.path.Path
 import kotlin.io.path.extension
-import kotlin.io.path.pathString
 
 /**
  * A [Parser] implementation that leverages a VS Code extension (via [LocalCommunicationInterface])
@@ -34,39 +26,26 @@ import kotlin.io.path.pathString
  * by invoking [VsCodeConnectionParser].
  *
  * @property pathToProject The primary path to the project being analyzed. Used for resolving relative paths.
- * @param commsChannel Optional [LocalCommunicationInterface] for communicating with the VS Code extension.
- *                     If not provided, it attempts to create one based on port information found in a Bevel-specific file.
- * @property fileHandler The [FileHandler] used for file system operations. Defaults to [CachedIoFileHandler].
+ * @param commsChannel [LocalCommunicationInterface] for communicating with the VS Code extension.
+ * @property fileHandler The [FileHandler] used for file system operations.
  * @property languageSpecification The [VsCodeLanguageSpecification] defining how symbols and types are interpreted.
- *                                 Defaults to [GeneralLanguageSpecification].
- * @property fileWalker The [FileWalker] used to discover files to parse. Defaults to [GitignoreAwareFileWalker].
+ * @property fileWalker The [FileWalker] used to discover files to parse.
  * @property logger The [Logger] instance for this class.
  * @property connectionVersion A version string to tag connections created by this parser.
  */
 class VsCodeParser(
     private val pathToProject: String,
-    commsChannel: LocalCommunicationInterface? = null,
-    private val fileHandler: FileHandler = CachedIoFileHandler(),
-    private val languageSpecification: VsCodeLanguageSpecification = GeneralLanguageSpecification(fileHandler),
-    private val fileWalker: FileWalker = GitignoreAwareFileWalker(languageSpecification, fileHandler),
-    private val logger: Logger = LoggerFactory.getLogger(VsCodeParser::class.java),
-    private val connectionVersion: String = "1.0.0"
-): Parser {
+    private val commsChannel: LocalCommunicationInterface,
+    private val fileHandler: FileHandler,
+    private val languageSpecification: VsCodeLanguageSpecification,
+    private val fileWalker: FileWalker,
+    override val logger: Logger,
+    private val connectionVersion: String
+): Parser, IntermediateFileParser {
     /**
      * Keeps track of the total lines of code analyzed across multiple files during a parse operation.
      */
     private var linesOfCodeAnalysed = 0
-    private val commsChannel: LocalCommunicationInterface
-
-    init {
-        if(commsChannel != null) {
-            this.commsChannel = commsChannel
-        }
-        else {
-            val port = fileHandler.readString(BevelFilesPathResolver.bevelPortFilePath(pathToProject).pathString).trim()
-            this.commsChannel = RestCommunicationInterfaceCreator(JavaNetReactorMonoWebClient(), port).create()
-        }
-    }
 
     /**
      * Parses files from a list of project paths and returns a [GraphBuilder] representing the combined knowledge graph.
@@ -94,7 +73,7 @@ class VsCodeParser(
      * @param initialGraph An optional [GraphBuilder] to extend. If null, a new one is created.
      * @return A [GraphBuilder] populated with nodes and connections from the parsed files.
      */
-    fun parseFiles(absoluteFiles: List<String>, initialGraph: GraphBuilder? = null): GraphBuilder {
+    override fun parseFiles(absoluteFiles: List<String>, initialGraph: GraphBuilder?): GraphBuilder {
         linesOfCodeAnalysed = 0
         val mergedGraph = parseNodesInFiles(absoluteFiles, initialGraph)
         createDefinesConnections(mergedGraph)

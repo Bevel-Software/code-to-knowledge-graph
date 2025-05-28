@@ -9,7 +9,6 @@ import software.bevel.graph_domain.graph.builder.NodeBuilder
 import software.bevel.graph_domain.parsing.PotentialSymbol
 import software.bevel.file_system_domain.services.FileHandler
 import software.bevel.graph_domain.tokenizers.IdentifierTokenizer
-import software.bevel.graph_domain.tokenizers.RegexIdentifierTokenizer
 import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeNodeBuilder
 import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeRange
 import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeSymbolKind
@@ -23,14 +22,14 @@ import kotlin.io.path.pathString
  *
  * @property fileHandler An instance of [FileHandler] for file system operations.
  * @property vsCodeNodeBuilder An instance of [VsCodeNodeBuilder] used to create graph nodes from VS Code symbols.
+ * @param tokenizer An [IdentifierTokenizer] used to extract potential symbols from C# code.
  * @property supportedFileEndings A list of file extensions recognized as C# files (e.g., ".cs"). Defaults to listOf(".cs").
- * @param tokenizer An [IdentifierTokenizer] used to extract potential symbols from C# code. Defaults to [RegexIdentifierTokenizer].
  */
 class CSharpLanguageSpec(
     val fileHandler: FileHandler,
     override val vsCodeNodeBuilder: VsCodeNodeBuilder,
+    private val tokenizer: IdentifierTokenizer,
     override var supportedFileEndings: List<String> = listOf(".cs"),
-    private val tokenizer: IdentifierTokenizer = RegexIdentifierTokenizer()
 ): VsCodeLanguageSpecification {
     /**
      * A set of reserved words in C#. Currently, this set is not populated but is available for future use

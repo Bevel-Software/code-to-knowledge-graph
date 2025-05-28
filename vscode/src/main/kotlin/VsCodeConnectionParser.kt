@@ -2,7 +2,6 @@ package software.bevel.code_to_knowledge_graph.vscode
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import software.bevel.file_system_domain.absolutizePath
 import software.bevel.file_system_domain.LCPosition
 import software.bevel.file_system_domain.LCRange
@@ -14,9 +13,7 @@ import software.bevel.file_system_domain.relativizePath
 import software.bevel.file_system_domain.services.FileHandler
 import software.bevel.file_system_domain.web.LocalCommunicationInterface
 import software.bevel.code_to_knowledge_graph.vscode.data.*
-import software.bevel.code_to_knowledge_graph.vscode.languageSpecs.GeneralLanguageSpecification
 import software.bevel.code_to_knowledge_graph.vscode.languageSpecs.VsCodeLanguageSpecification
-import software.bevel.file_system_domain.services.CachedIoFileHandler
 import java.io.File
 import java.nio.file.Path
 import kotlin.math.abs
@@ -34,18 +31,16 @@ import kotlin.math.abs
  * @property commsChannel The [LocalCommunicationInterface] used to send commands to and receive responses from
  *                        the VS Code extension.
  * @property fileHandler A [FileHandler] instance for reading file contents.
- *                       Defaults to [CachedIoFileHandler].
  * @property languageSpecification A [VsCodeLanguageSpecification] that provides language-specific logic for
  *                                 identifying potential symbols and handling special connection types.
- *                                 Defaults to [GeneralLanguageSpecification].
  * @property logger An SLF4J [Logger] instance for logging parsing activities and errors.
  */
 class VsCodeConnectionParser(
     private val projectPath: String,
     private val commsChannel: LocalCommunicationInterface,
-    private val fileHandler: FileHandler = CachedIoFileHandler(),
-    private val languageSpecification: VsCodeLanguageSpecification = GeneralLanguageSpecification(fileHandler),
-    private val logger: Logger = LoggerFactory.getLogger(VsCodeConnectionParser::class.java)
+    private val fileHandler: FileHandler,
+    private val languageSpecification: VsCodeLanguageSpecification,
+    private val logger: Logger
 ): ConnectionParser {
     /**
      * Internal helper class responsible for the actual processing of nodes to find connections.

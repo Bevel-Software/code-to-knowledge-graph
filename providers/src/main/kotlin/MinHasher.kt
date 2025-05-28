@@ -6,7 +6,6 @@ import com.dynatrace.hash4j.similarity.SimilarityHashing
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import software.bevel.graph_domain.hashing.LocalitySensitiveHasher
-import software.bevel.graph_domain.tokenizers.CharSemanticTokenizer
 import software.bevel.graph_domain.tokenizers.SemanticTokenizer
 import java.util.*
 import java.util.function.ToLongFunction

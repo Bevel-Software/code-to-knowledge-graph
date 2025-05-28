@@ -141,15 +141,18 @@ class ConverterBasedAntlrParser<PARSER: org.antlr.v4.runtime.Parser, LEXER: org.
     }
 
     /**
-     * Parses a single source code file specified by [pathToFile].
+     * Parses a single source code file specified by [absolutePathToFile].
      * It reads the file content and then delegates to [parseString] for the actual parsing logic.
      *
-     * @param pathToFile The absolute path to the source code file to be parsed.
+     * @param absolutePathToFile The absolute path to the source code file to be parsed.
      * @return A [GraphBuilder] representing the knowledge graph extracted from the file.
      */
-    override fun parseFile(pathToFile: String): GraphBuilder {
-        val codeFile = File(pathToFile)
-        return parseString(codeFile.readText(), pathToFile, 0)
+    override fun parseFile(absolutePathToFile: String, initialGraph: GraphBuilder?): GraphBuilder {
+        val codeFile = File(absolutePathToFile)
+        return parseString(codeFile.readText(), absolutePathToFile, 0).let {
+            initialGraph?.addAll(it)
+            it
+        }
     }
 
     /**

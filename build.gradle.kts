@@ -47,23 +47,30 @@ licenseReport {
 
 // Define group and version based on root project or use defaults for standalone
 val projectGroup = "software.bevel"
-val projectVersion = "1.0.0"
+val projectVersion = "1.1.0"
 
 group = projectGroup
 version = projectVersion
 
 dependencies {
+    implementation("org.slf4j:slf4j-api:2.0.17")
     // Handle external module dependencies differently based on whether we're in standalone or multi-project mode
     if (rootProject.name == "code-to-knowledge-graph") {
-        api(project(":antlr"))
+        //api(project(":antlr"))
+        //api(project(":regex"))
         api(project(":providers"))
-        api(project(":regex"))
         api(project(":vscode"))
+        api("$projectGroup:file-system-domain:$projectVersion")
+        api("$projectGroup:graph-domain:$projectVersion")
+        implementation("$projectGroup:networking:$projectVersion")
     } else {
-        api(project(":code-to-knowledge-graph:antlr"))
+        //api(project(":code-to-knowledge-graph:antlr"))
+        //api(project(":code-to-knowledge-graph:regex"))
         api(project(":code-to-knowledge-graph:providers"))
-        api(project(":code-to-knowledge-graph:regex"))
         api(project(":code-to-knowledge-graph:vscode"))
+        api(project(":file-system-domain"))
+        api(project(":graph-domain"))
+        implementation(project(":networking"))
     }
 }
 
@@ -108,6 +115,31 @@ publishing {
                     developerConnection.set("scm:git:ssh://git@github.com:Bevel-Software/code-to-knowledge-graph.git")
                     url.set("https://github.com/Bevel-Software/code-to-knowledge-graph")
                 }
+
+                // Add explicit dependencies to the POM
+                withXml {
+                    val root = asNode()
+                    val depsNode = root.children().find { (it as groovy.util.Node).name() == "dependencies" } as groovy.util.Node? 
+                        ?: root.appendNode("dependencies")
+                    
+                    // Add vscode submodule as a direct dependency
+                    val vscodeNode = depsNode.appendNode("dependency")
+                    vscodeNode.appendNode("groupId", projectGroup)
+                    vscodeNode.appendNode("artifactId", "vscode")
+                    vscodeNode.appendNode("version", projectVersion)
+                    
+                    // Add providers submodule
+                    val providersNode = depsNode.appendNode("dependency")
+                    providersNode.appendNode("groupId", projectGroup)
+                    providersNode.appendNode("artifactId", "providers")
+                    providersNode.appendNode("version", projectVersion)
+                    
+                    // Add regex submodule
+                    val regexNode = depsNode.appendNode("dependency")
+                    regexNode.appendNode("groupId", projectGroup)
+                    regexNode.appendNode("artifactId", "regex")
+                    regexNode.appendNode("version", projectVersion)
+                }
             }
         }
     }
@@ -118,7 +150,7 @@ signing {
     sign(publishing.publications["maven"])
 }
 
-allprojects {
+subprojects {
     group = projectGroup
     version = projectVersion
 
@@ -141,12 +173,10 @@ allprojects {
             if (rootProject.name == "code-to-knowledge-graph") {
                 // In standalone mode, use the published Maven artifacts
                 api("$projectGroup:file-system-domain:$projectVersion")
-                implementation("$projectGroup:networking:$projectVersion")
                 api("$projectGroup:graph-domain:$projectVersion")
             } else {
                 // In multi-project mode, use the project dependencies
                 api(project(":file-system-domain"))
-                implementation(project(":networking"))
                 api(project(":graph-domain"))
             }
             

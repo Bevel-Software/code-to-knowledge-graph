@@ -1,22 +1,17 @@
 package software.bevel.code_to_knowledge_graph.vscode.languageSpecs
 
-import software.bevel.code_to_knowledge_graph.providers.MinHasher
 import software.bevel.file_system_domain.absolutizePath
 import software.bevel.graph_domain.graph.Connection
 import software.bevel.graph_domain.graph.Graphlike
-import software.bevel.file_system_domain.LCPosition
 import software.bevel.graph_domain.graph.builder.GraphBuilder
 import software.bevel.graph_domain.graph.builder.NodeBuilder
 import software.bevel.graph_domain.parsing.PotentialSymbol
 import software.bevel.graph_domain.parsing.SupportedFileExtensions
 import software.bevel.file_system_domain.services.FileHandler
 import software.bevel.graph_domain.tokenizers.IdentifierTokenizer
-import software.bevel.graph_domain.tokenizers.RegexIdentifierTokenizer
 import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeNodeBuilder
 import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeRange
 import software.bevel.code_to_knowledge_graph.vscode.data.VsCodeSymbolKind
-import software.bevel.file_system_domain.services.CachedIoFileHandler
-import software.bevel.graph_domain.hashing.LocalitySensitiveHasher
 import java.io.File
 
 /**
@@ -29,18 +24,15 @@ import java.io.File
  *
  * @property fileHandler An instance of [FileHandler] for file system operations, passed to specific language specs.
  * @property vsCodeNodeBuilder An instance of [VsCodeNodeBuilder] used for creating graph nodes, also passed to specific language specs.
- *                             Defaults to a new instance with a [MinHasher].
- * @param fileExtensions Optional [SupportedFileExtensions] to customize file endings for specific languages.
  * @param tokenizer An [IdentifierTokenizer] used for generic tokenization if no specific language spec handles the file.
- *                  Defaults to [RegexIdentifierTokenizer]. This tokenizer is also passed to the specific language specs.
+ *                  This tokenizer is also passed to the specific language specs.
+ * @param fileExtensions Optional [SupportedFileExtensions] to customize file endings for specific languages.
  */
 class GeneralLanguageSpecification(
     val fileHandler: FileHandler,
-    override val vsCodeNodeBuilder: VsCodeNodeBuilder = VsCodeNodeBuilder(
-        fileHandler, MinHasher()
-    ),
+    override val vsCodeNodeBuilder: VsCodeNodeBuilder,
+    private val tokenizer: IdentifierTokenizer,
     fileExtensions: SupportedFileExtensions? = null,
-    private val tokenizer: IdentifierTokenizer = RegexIdentifierTokenizer()
 ): VsCodeLanguageSpecification {
     /**
      * A map holding instances of specific language specifications, keyed by language name (e.g., "CSharp", "COBOL").

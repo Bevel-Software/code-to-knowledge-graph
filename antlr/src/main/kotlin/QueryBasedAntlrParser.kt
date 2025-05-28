@@ -136,12 +136,15 @@ class QueryBasedAntlrParser<PARSER: org.antlr.v4.runtime.Parser, LEXER: org.antl
      * Parses a single file specified by its path into a [GraphBuilder].
      * Reads the file content and delegates to [parseString].
      *
-     * @param pathToFile The absolute path to the file to be parsed.
+     * @param absolutePathToFile The absolute path to the file to be parsed.
      * @return A [GraphBuilder] representing the knowledge graph of the parsed file.
      */
-    override fun parseFile(pathToFile: String): GraphBuilder {
-        val codeFile = File(pathToFile)
-        return parseString(codeFile.readText(), pathToFile, 0)
+    override fun parseFile(absolutePathToFile: String, initialGraph: GraphBuilder?): GraphBuilder {
+        val codeFile = File(absolutePathToFile)
+        return parseString(codeFile.readText(), absolutePathToFile, 0).let {
+            initialGraph?.addAll(it)
+            it
+        }
     }
 
     /**

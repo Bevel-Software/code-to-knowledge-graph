@@ -1,39 +1,33 @@
 package software.bevel.code_to_knowledge_graph.vscode
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import software.bevel.code_to_knowledge_graph.providers.MinHasher
-import software.bevel.file_system_domain.FileWalker
 import software.bevel.file_system_domain.absolutizePath
 import software.bevel.graph_domain.graph.Graph
 import software.bevel.graph_domain.graph.Graphlike
-import software.bevel.graph_domain.graph.builder.FullyQualifiedNodeBuilder
 import software.bevel.graph_domain.graph.builder.GraphBuilder
 import software.bevel.graph_domain.graph.builder.ListConnectionsNavigator
 import software.bevel.graph_domain.graph.builder.MutableMapConnectionsBuilder
 import software.bevel.graph_domain.parsing.GraphUpdateParser
 import software.bevel.file_system_domain.relativizePath
-import software.bevel.file_system_domain.services.CachedIoFileHandler
 import software.bevel.graph_domain.GraphMergingService
-import software.bevel.graph_domain.GraphMergingServiceImpl
+import software.bevel.graph_domain.parsing.IntermediateFileParser
 
 /**
  * Implements [GraphUpdateParser] to handle updates to a knowledge graph based on file changes
- * (additions, deletions, modifications) using a [VsCodeParser].
+ * (additions, deletions, modifications) using a [IntermediateFileParser].
  *
  * This class orchestrates the parsing of changed files and integrates the results into an existing graph,
  * leveraging a [GraphMergingService] to reconcile differences.
  *
  * @property projectPath The absolute path to the root of the project being analyzed.
  *                       Used for relativizing and absolutizing file paths.
- * @property vsCodeParser The [VsCodeParser] instance used to parse or re-parse files to generate graph structures.
+ * @property parser The [IntermediateFileParser] instance used to parse or re-parse files to generate graph structures.
  * @property graphMergingService The [GraphMergingService] used to merge new or updated graph information
- *                               with the existing graph. Defaults to [GraphMergingServiceImpl].
+ *                               with the existing graph.
  */
 class VsCodeGraphUpdater(
     private val projectPath: String,
-    private val vsCodeParser: VsCodeParser,
-    private val graphMergingService: GraphMergingService = GraphMergingServiceImpl(MinHasher(), CachedIoFileHandler()),
+    private val parser: IntermediateFileParser,
+    private val graphMergingService: GraphMergingService,
 ): GraphUpdateParser {
 
     /**
@@ -97,7 +91,7 @@ class VsCodeGraphUpdater(
 
     /**
      * Parses a list of specified files and adds their graph representations to the [currentGraph].
-     * The [vsCodeParser] is used to parse the files, building upon the [currentGraph] (passed as a [GraphBuilder]).
+     * The [parser] is used to parse the files, building upon the [currentGraph] (passed as a [GraphBuilder]).
      *
      * @param filesToAdd A list of absolute or relative file paths to be parsed and added to the graph.
      * @param currentGraph The current [Graphlike] state of the knowledge graph, which serves as a base.
@@ -105,7 +99,7 @@ class VsCodeGraphUpdater(
      */
     override fun addFiles(filesToAdd: List<String>, currentGraph: Graphlike): Graphlike {
         val absoluteFileToAdd = filesToAdd.map { absolutizePath(it, projectPath) }
-        val newGraph = vsCodeParser.parseFiles(absoluteFileToAdd, GraphBuilder(currentGraph))
+        val newGraph = parser.parseFiles(absoluteFileToAdd, GraphBuilder(currentGraph))
 
         return newGraph.build()
     }
