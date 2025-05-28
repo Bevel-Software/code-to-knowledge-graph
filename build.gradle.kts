@@ -111,19 +111,6 @@ publishing {
             }
         }
     }
-
-    repositories {
-        maven {
-            name = "ProjectRepository"
-            url = uri(layout.buildDirectory.dir("repo"))
-            // For actual remote repositories, uncomment and configure these:
-            // url = uri("https://your.maven.repo/releases")
-            // credentials {
-            //     username = findProperty("mavenUsername") as String?
-            //     password = findProperty("mavenPassword") as String?
-            // }
-        }
-    }
 }
 
 // Configure signing
@@ -153,14 +140,14 @@ allprojects {
             // Handle external module dependencies differently based on whether we're in standalone or multi-project mode
             if (rootProject.name == "code-to-knowledge-graph") {
                 // In standalone mode, use the published Maven artifacts
-                implementation("$projectGroup:file-system-domain:$projectVersion")
+                api("$projectGroup:file-system-domain:$projectVersion")
                 implementation("$projectGroup:networking:$projectVersion")
-                implementation("$projectGroup:graph-domain:$projectVersion")
+                api("$projectGroup:graph-domain:$projectVersion")
             } else {
                 // In multi-project mode, use the project dependencies
-                implementation(project(":file-system-domain"))
+                api(project(":file-system-domain"))
                 implementation(project(":networking"))
-                implementation(project(":graph-domain"))
+                api(project(":graph-domain"))
             }
             
             implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
