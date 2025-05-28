@@ -138,9 +138,8 @@ The documentation found in:
 ...describes how to use the `bevel_ast_ql` system. While this system is not active, the concepts and query examples might still provide valuable insights into thinking about code-to-graph transformations, should you wish to explore or revive parts of that system.
 
 <!-- TODO: INSERT GIF SHOWING A QUERY ON THE GENERATED GRAPH -->
-<p align="center">
-  <img src="https://i.imgur.com/XhPzIGP.gif" alt="Querying the Knowledge Graph"/>
-</p> 
+![Querying the Knowledge Graph](https://i.imgur.com/XhPzIGP.gif)
+
 
 ### Codebase Combiner Utility
 
