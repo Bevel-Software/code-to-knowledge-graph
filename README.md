@@ -1,6 +1,6 @@
 <p align="center">
   <!-- TODO: INSERT COOL LOGO HERE -->
-  <!-- Example: <img src="docs/assets/logo.svg" alt="Code-to-Knowledge-Graph Logo" width="200"/> -->
+  <img src="https://i.imgur.com/4VnBgXz.png" alt="Code-to-Knowledge-Graph Logo" width="200"/>
   <h1 align="center">Code-to-Knowledge-Graph ✨</h1>
 </p>
 
@@ -138,9 +138,8 @@ The documentation found in:
 ...describes how to use the `bevel_ast_ql` system. While this system is not active, the concepts and query examples might still provide valuable insights into thinking about code-to-graph transformations, should you wish to explore or revive parts of that system.
 
 <!-- TODO: INSERT GIF SHOWING A QUERY ON THE GENERATED GRAPH -->
-<!-- <p align="center">
-  <img src="docs/assets/graph-query-example.gif" alt="Querying the Knowledge Graph"/>
-</p> -->
+![Querying the Knowledge Graph](https://i.imgur.com/XhPzIGP.gif)
+
 
 ### Codebase Combiner Utility
 
