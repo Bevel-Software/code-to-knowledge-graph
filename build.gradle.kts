@@ -76,12 +76,27 @@ dependencies {
         api(project(":graph-domain"))
         api(project(":networking"))
     }
+
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+    testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
+    testImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.3")
+    testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.3")
+    testImplementation("org.mockito:mockito-core:4.0.0")
+    testImplementation("org.mockito:mockito-inline:4.0.0")
+    testImplementation("io.mockk:mockk:1.13.16")
 }
 
 // Create Javadoc and source jars
 java {
     withJavadocJar()
     withSourcesJar()
+}
+
+// Configure testing with JUnit 5
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 publishing {

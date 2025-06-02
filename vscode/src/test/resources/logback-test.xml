@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Create a custom appender that will throw exceptions on error logs -->
+    <appender name="THROWING_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <!-- Custom TurboFilter that throws exceptions for ERROR level logs -->
+    <turboFilter class="ch.qos.logback.classic.turbo.TurboFilter">
+        <name>ErrorToExceptionFilter</name>
+        <class>software.bevel.file_system_domain.logging.ErrorToExceptionTurboFilter</class>
+    </turboFilter>
+
+    <!-- Configure root logger -->
+    <root level="INFO">
+        <appender-ref ref="THROWING_CONSOLE" />
+    </root>
+</configuration>
