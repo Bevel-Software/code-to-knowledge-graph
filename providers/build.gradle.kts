@@ -47,7 +47,7 @@ licenseReport {
 
 // Define group and version based on root project or use defaults for standalone
 val projectGroup = "software.bevel"
-val projectVersion = "1.1.3"
+val projectVersion = "1.2.0"
 
 group = projectGroup
 version = projectVersion
@@ -61,8 +61,8 @@ dependencies {
     api("org.slf4j:slf4j-api:2.0.17")
     // Handle external module dependencies differently based on whether we're in standalone or multi-project mode
     if (rootProject.name == "code-to-knowledge-graph-providers") {
-        api("$projectGroup:file-system-domain:1.1.0")
-        api("$projectGroup:graph-domain:1.1.0")
+        api("$projectGroup:file-system-domain:1.2.0")
+        api("$projectGroup:graph-domain:1.2.0")
     } else {
         api(project(":file-system-domain"))
         api(project(":graph-domain"))
