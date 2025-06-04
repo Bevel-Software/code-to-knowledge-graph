@@ -11,7 +11,7 @@
 <p align="center">
   <!-- Badges: Replace placeholders with actual URLs if you set them up -->
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg" alt="License"></a>
-  <a href="https://github.com/YOUR_USERNAME/code-to-knowledge-graph/stargazers"><img src="https://img.shields.io/github/stars/YOUR_USERNAME/code-to-knowledge-graph.svg?style=social&label=Star&maxAge=2592000" alt="GitHub Stars"></a>
+  <a href="https://github.com/Bevel-Software/code-to-knowledge-graph/stargazers"><img src="https://img.shields.io/github/stars/Bevel-Software/code-to-knowledge-graph.svg?style=social&label=Star&maxAge=2592000" alt="GitHub Stars"></a>
   <!-- Add build status badge if you have CI/CD -->
   <!-- <a href="YOUR_CI_CD_LINK"><img src="YOUR_BUILD_STATUS_BADGE_URL" alt="Build Status"></a> -->
 </p>
@@ -82,7 +82,67 @@ The project is organized into several key modules:
   <img src="docs/assets/how-it-works-vscode.gif" alt="Code to Knowledge Graph in Action (VS Code Path)"/>
 </p> -->
 
+## 🛠️ How Can This Be Used? Top Use Cases
+
+The **code-to-knowledge-graph** project serves as the foundational engine that powers a comprehensive ecosystem of developer tools designed to unlock insights from complex codebases. Here are the top use cases and tools that leverage this knowledge graph technology:
+
+### 🎯 **1. Interactive Code Visualization & Exploration**
+**Tool: [Bevel Neo4j Visualization](https://github.com/Bevel-Software/bevel-neo4j-viz)**
+
+Transform your codebase knowledge graph into stunning, interactive visualizations within VS Code.
+
+![Neo4j Visualization](assets/neo4j-viz.gif)
+
+### 🧪 **2. AI-Assisted Test Generation**
+**Tool: [Bevel Test Generator](https://marketplace.visualstudio.com/items?itemName=bevel-software.bevel-test-generator)**
+
+Leverage the knowledge graph to create comprehensive test prompts for AI coding assistants.
+
+![Testing Prompt Generator](assets/testing-prompt-generator.gif)
+
+### 📈 **3. Sequence Diagrams & Documentation**
+**Tool: [Bevel Software Extension](https://marketplace.visualstudio.com/items?itemName=bevel-software.bevel)**
+
+Generate interactive sequence diagrams and call graphs directly from your codebase analysis.
+
+![Bevel Sequence Diagram](assets/bevel-sequence-diagram.gif)
+
+### 🚀 **4. Custom Tool Development**
+**Tool: Direct Integration with Knowledge Graph API**
+
+Build your own analysis tools using the knowledge graph foundation.
+
+![Bevel APIs](assets/bevel-apis.gif)
+
+### 💡 **Why This Ecosystem Approach Works**
+
+1. **🏗️ Solid Foundation**: The knowledge graph provides a consistent, queryable representation of code structure
+2. **🔧 Specialized Tools**: Each tool focuses on specific use cases while sharing the same data foundation  
+3. **🤝 Seamless Integration**: Tools work together, with each providing unique value
+4. **🌱 Extensible**: Build custom solutions on top of the knowledge graph API
+5. **📈 Scalable**: From individual functions to enterprise codebases
+
+Whether you're dealing with legacy systems, complex architectures, or simply want to understand your code better, this ecosystem provides the tools to transform raw source code into actionable insights and beautiful visualizations.
+
+---
+
 ## ⚙️ Getting Started
+
+### 🚀 Quick Start (Recommended)
+
+The easiest way to get started is by using the pre-built VS Code extensions that leverage this knowledge graph technology:
+
+1. **Install the main [Bevel Extension](https://marketplace.visualstudio.com/items?itemName=bevel-software.bevel)** from the VS Code marketplace
+2. **Open your codebase** in VS Code and run `Bevel: Re-/Analyze Project` from the Command Palette
+3. **Explore with additional tools:**
+   - Install [Bevel Neo4j Visualization](https://github.com/Bevel-Software/bevel-neo4j-viz) for graph exploration
+   - Install [Bevel Test Generator](https://marketplace.visualstudio.com/items?itemName=bevel-software.bevel-test-generator) for AI-assisted testing
+
+This approach gives you immediate access to the knowledge graph capabilities without needing to build from source.
+
+### 🔧 Advanced Usage & Development
+
+If you want to build custom tools or contribute to the core engine:
 
 ### Prerequisites
 
@@ -95,7 +155,7 @@ The project is organized into several key modules:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/YOUR_USERNAME/code-to-knowledge-graph.git
+    git clone https://github.com/Bevel-Software/code-to-knowledge-graph.git
     cd code-to-knowledge-graph
     ```
 
@@ -104,9 +164,6 @@ The project is organized into several key modules:
     ./gradlew build
     ```
     This will compile the Kotlin/Java code, run tests, and produce necessary artifacts.
-
-
-**Replace it with this:**
 
 ## 🚀 Usage
 
