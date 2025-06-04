@@ -1,5 +1,4 @@
 <p align="center">
-  <!-- TODO: INSERT COOL LOGO HERE -->
   <img src="https://i.imgur.com/4VnBgXz.png" alt="Code-to-Knowledge-Graph Logo" width="200"/>
   <h1 align="center">Code-to-Knowledge-Graph ✨</h1>
 </p>
@@ -9,7 +8,6 @@
 </p>
 
 <p align="center">
-  <!-- Badges: Replace placeholders with actual URLs if you set them up -->
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg" alt="License"></a>
   <a href="https://github.com/Bevel-Software/code-to-knowledge-graph/stargazers"><img src="https://img.shields.io/github/stars/Bevel-Software/code-to-knowledge-graph.svg?style=social&label=Star&maxAge=2592000" alt="GitHub Stars"></a>
   <!-- Add build status badge if you have CI/CD -->
@@ -18,49 +16,54 @@
 
 ---
 
-This project is your gateway to transforming complex source code into structured, queryable knowledge graphs. By leveraging semantic analysis (primarily via VS Code Language Server capabilities and historically through ANTLR), we extract meaningful information about your code's entities, relationships, and architecture. Dive deep into your codebase like never before!
+**Code-to-Knowledge-Graph** is a sophisticated Kotlin/JVM toolkit designed to parse complex source code and transform it into a rich, structured, and queryable knowledge graph. Its primary approach leverages **VS Code's Language Server Protocol (LSP)** capabilities to extract meaningful information about your code's entities (classes, functions, variables), their relationships (calls, inheritance, usage), and overall architecture.
 
-
-## 🚀 Key Features
-
-*   **Knowledge Graph Generation:** Converts source code from various languages into a rich graph structure.
-*   **VS Code Integration:** Primarily utilizes VS Code's powerful language servers for parsing and symbol extraction, providing broad language support out-of-the-box.
-*   **Language Agnostic (via VS Code):** The VS Code module aims to support any language for which a good Language Server Protocol (LSP) implementation exists.
-*   **Detailed Symbol & Relationship Extraction:** Captures classes, functions, variables, calls, inheritance, implementations, and more.
-*   **File System Awareness:** Includes tools for intelligently walking file trees, respecting `.gitignore` patterns.
-*   **MinHashing for Similarity:** Implements MinHash for locality-sensitive hashing, useful for detecting near-duplicate code snippets or tracking semantic drift.
-*   **(Historical) ANTLR-based Parsing & Querying:** Features a sophisticated, though now **deprecated**, ANTLR-based parsing pipeline with a custom AST Query Language (`bevel_ast_ql`) for fine-grained code analysis.
+This empowers developers and teams to:
+*   🔍 **Deeply Understand Code**: Visualize and query intricate relationships between components.
+*   📈 **Analyze Impact**: Understand the ripple effects of changes across the codebase.
+*   🏛️ **Gain Architectural Insights**: Discover design patterns, dependencies, and potential refactoring opportunities.
+*   🛠️ **Build Custom Tooling**: Create linters, documentation generators, or advanced refactoring tools on top of the graph.
+*   🤖 **Augment AI & LLMs**: Provide rich, structured context about your code to Large Language Models for enhanced analysis and code generation.
 
 ## 🤔 Why Code-to-Knowledge-Graph?
 
-Understanding large, evolving codebases is a monumental task. This project aims to alleviate that by:
+Navigating and understanding large, evolving codebases is a monumental challenge. This project simplifies this by:
+*   **Providing a structured, queryable representation of your code.**
+*   **Enabling enhanced code comprehension** beyond simple text search.
+*   **Laying the foundation for smarter development tools** and data-driven architectural decisions.
+*   **Bridging your code with AI** by offering deep structural context to LLMs.
 
-*   **Deep Code Understanding:** Visualize and query relationships between components.
-*   **Impact Analysis:** Understand the ripple effects of changes.
-*   **Architectural Insights:** Discover design patterns, dependencies, and potential issues.
-*   **Foundation for Custom Tooling:** Build linters, documentation generators, or advanced refactoring tools on top of the graph.
-*   **AI & LLM Augmentation:** Provide rich, structured context about code to Large Language Models.
+## ✨ Key Features
 
-## 🛠️ Core Modules
+*   **Primary Approach - VS Code LSP Integration (`vscode/` module)**:
+    *   Utilizes VS Code's language servers for robust parsing and symbol extraction.
+    *   Aims for broad language support wherever a quality LSP implementation exists.
+    *   Extracts symbols, definitions, references, and type hierarchies.
+    *   Supports incremental graph updates based on file changes.
+*   **Simplified Instantiation**: The `Factories.kt` file provides easy-to-use factory methods to get started quickly.
+*   **Comprehensive Graph Model (`graph-domain` dependency)**:
+    *   Leverages `software.bevel:graph-domain` for defining nodes (classes, functions, etc.) and connections (defines, inherits, calls, uses, etc.).
+*   **File System Awareness (`file-system-domain` dependency & `providers/` module)**:
+    *   Intelligent file tree walking, respecting `.gitignore` patterns.
+    *   Abstracted file handling.
+*   **Code Similarity Detection (`providers/` module)**:
+    *   MinHashing (`MinHasher` using `hash4j`) for locality-sensitive hashing.
+*   **Historical ANTLR-Powered Parsing (`antlr/` module)**:
+    *   For users needing deep, grammar-specific analysis or working with languages where LSP support is unavailable/insufficient, this module offers an ANTLR-based pipeline with a custom AST Query Language (`bevel_ast_ql`). (See [Querying Guide](./docs/queries.md)). This is considered an advanced/historical feature.
 
-The project is organized into several key modules:
+## ⚙️ Core Modules & Architecture
 
-1.  **`vscode/` (Primary & Active):**
-    *   Interfaces with VS Code's language services to extract symbols, references, and definitions.
-    *   `VsCodeParser.kt`: Orchestrates symbol extraction from files.
-    *   `VsCodeConnectionParser.kt`: Infers connections (calls, inheritance, etc.) from symbols.
-    *   `languageSpecs/`: Contains language-specific configurations and heuristics to refine VS Code's output.
-    *   This is the **recommended and actively developed** approach for parsing.
+*   **`vscode/` (Primary & Active)**: Handles all interaction with VS Code Language Servers for parsing and relationship discovery. This is the recommended module for most use cases.
+*   **`providers/` (Shared Utilities)**: Contains common implementations like `GitignoreAwareFileWalker`, `MinHasher`, and file handlers.
+*   **`antlr/` (Advanced/Historical)**: ANTLR-based parsing engine and custom AST query language.
 
-2.  **`antlr/` (⚠️ Largely Deprecated & Non-Functional):**
-    *   Contains ANTLR grammars for various languages (Kotlin, C#, JavaScript).
-    *   Includes a custom AST Query Language (`bevel_ast_ql/`) for defining patterns to extract nodes and relationships from ANTLR parse trees.
-    *   `QueryBasedAntlrParser.kt` & `ConverterBasedAntlrParser.kt`: Historical parsers using this system.
-    *   **Important:** This module underwent a large-scale refactor and is **no longer functional in its current state.** It's preserved for its valuable query language design and potential future reintegration if specific deep-parsing needs arise that VS Code LSP cannot fulfill. The documentation in `docs/` primarily refers to this deprecated system.
+**Key External Bevel Dependencies:**
+This project integrates deeply with other Bevel libraries:
+*   **`software.bevel:file-system-domain`**: Provides foundational interfaces for file system operations, path resolution, and text locations (e.g., `.bevel` project structure, `LCRange`).
+*   **`software.bevel:graph-domain`**: Defines the core graph model (`Node`, `Connection`), graph construction tools (`GraphBuilder`), and parsing interfaces.
+*   **`software.bevel:networking`**: Used by the `vscode` module (often via `Factories.kt`) to establish communication with the VS Code extension (e.g., `RestCommunicationInterface`).
 
-3.  **`providers/`:**
-    *   `GitignoreAwareFileWalker.kt`: Efficiently traverses project directories, respecting `.gitignore`.
-    *   `MinHasher.kt`: Implements MinHash for code similarity analysis.
+## 📦 Installation
 
 4.  **`regex/` (⚠️ Deprecated):**
     *   Contains older, regex-based parsers for specific frameworks (e.g., AngularJS). Not actively maintained.
@@ -145,21 +148,126 @@ This approach gives you immediate access to the knowledge graph capabilities wit
 If you want to build custom tools or contribute to the core engine:
 
 ### Prerequisites
+*   Java Development Kit (JDK) 17 or higher.
+*   **A running VS Code instance with a compatible Bevel Language Server extension.** The `VsCodeParser` communicates with this extension to get code intelligence. The extension must expose an API (typically HTTP) that `LocalCommunicationInterface` (from `file-system-domain`, often implemented by `RestCommunicationInterface` from `networking`) can connect to. The default factory in `Factories.kt` will attempt to discover the port from Bevel's standard configuration files (e.g., in the `.bevel` directory of your project).
 
-*   Java Development Kit (JDK) 17 or higher
-*   Gradle (the project uses the Gradle wrapper, so it will be downloaded automatically)
-*   (For `vscode` module functionality) A running instance of VS Code or a compatible LSP server setup that the tool can communicate with (details depend on the specific runner implementation).
-*   Python 3 for the `combine_*.sh` scripts (`pip3 install -r requirements.txt`).
+### Adding Dependencies
 
-### Installation & Build
+You'll need to add `code-to-knowledge-graph`:
 
-1.  **Clone the repository:**
+**Gradle (Kotlin DSL - `build.gradle.kts`):**
+```kotlin
+dependencies {
+    implementation("software.bevel:code-to-knowledge-graph:1.1.3") // Use the latest version
+    // SLF4J implementation (e.g., Logback) for logging
+    implementation("ch.qos.logback:logback-classic:1.4.14")
+}
+```
+
+**Gradle (Groovy DSL - `build.gradle`):**
+```groovy
+dependencies {
+    implementation 'software.bevel:code-to-knowledge-graph:1.1.3' // Use the latest version
+    // SLF4J implementation (e.g., Logback) for logging
+    implementation 'ch.qos.logback:logback-classic:1.4.14'
+}
+```
+
+**Maven (`pom.xml`):**
+```xml
+<dependencies>
+    <dependency>
+        <groupId>software.bevel</groupId>
+        <artifactId>code-to-knowledge-graph</artifactId>
+        <version>1.1.3</version> <!-- Use the latest version -->
+    </dependency>
+    <!-- SLF4J implementation (e.g., Logback) for logging -->
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.4.14</version>
+    </dependency>
+</dependencies>
+```
+*(Always check Maven Central for the latest versions of all `software.bevel` artifacts.)*
+
+## 🚀 Quick Start & Usage
+
+Generating a knowledge graph is designed to be straightforward using the provided factory methods.
+
+**The easiest way to get started is with `FactoriesKt.createVsCodeParser()` (from Java) or `createVsCodeParser()` (from Kotlin).**
+
+**Example (Java):**
+```java
+import software.bevel.code_to_knowledge_graph.FactoriesKt;
+import software.bevel.graph_domain.graph.Graphlike;
+import software.bevel.graph_domain.parsing.Parser;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TestGraph {
+
+    public static void main(String[] args) {
+        // Ensure VS Code is running with the Bevel Language Server extension,
+        // and it's configured for the project at this path.
+        String projectPath = "C:\\Path\\To\\Your\\Project"; // Replace with your project path
+
+        // The factory creates a parser configured to talk to your VS Code extension.
+        Parser parser = FactoriesKt.createVsCodeParser(projectPath);
+
+        List<String> projectsToParse = new ArrayList<>();
+        projectsToParse.add(projectPath); // Add the root project path
+
+        // This initiates parsing of symbols and then connections.
+        Graphlike graph = parser.parse(projectsToParse);
+
+        System.out.println("Graph generation complete!");
+        System.out.println("Total Nodes: " + graph.getNodes().size());
+        System.out.println("Total Connections: " + graph.getConnections().getAllConnections().size());
+        // You can now explore the 'graph' object
+        // For example, print details of each node:
+        // graph.getNodes().values().forEach(node -> {
+        //     System.out.println("Node: " + node.getId() + " (Type: " + node.getNodeType() + ")");
+        // });
+    }
+}
+```
+
+**Explanation:**
+
+1.  **`FactoriesKt.createVsCodeParser(projectPath)`**: This is the key. It instantiates a `VsCodeParser` with sensible defaults.
+    *   It automatically sets up the `LocalCommunicationInterface` (usually a `RestCommunicationInterface`) to talk to your VS Code Bevel extension. It attempts to find the communication port from Bevel's project configuration files (typically within the `.bevel` directory of your `projectPath`).
+    *   It also initializes other necessary components like `FileHandler`, `LanguageSpecification`, etc.
+2.  **`parser.parse(projectsToParse)`**: This method performs a two-pass process:
+    *   **Pass 1 (Symbol Extraction)**: Uses `VsCodeParser` to walk the file tree (respecting `.gitignore`), query the VS Code extension for document symbols in each relevant file, and build an initial graph of nodes.
+    *   **Pass 2 (Connection Discovery)**: Uses `VsCodeConnectionParser` to query the VS Code extension for references, definitions, and implementations for the initially discovered symbols, thereby establishing connections (calls, inheritance, usage, etc.) between them.
+3.  The `Graphlike` object returned contains all the nodes and connections representing your codebase.
+
+**Important Considerations for VS Code Parser:**
+*   **VS Code Extension**: You MUST have a companion Bevel VS Code extension running and configured for your target project. This extension provides the LSP services that `code-to-knowledge-graph` consumes.
+*   **Project Indexing**: For best results, ensure VS Code has fully indexed your project. The quality of the graph depends on the accuracy of the LSP information.
+*   **Performance**: Parsing large projects can take time, as it involves numerous requests to the VS Code extension.
+
+### Advanced Customization
+
+If you need more control over the parsing process (e.g., custom file handlers, specific language configurations, or a pre-configured communication channel), you can use the more detailed constructor of `VsCodeParser` or the other parameters in `createVsCodeParser` found in `src/main/kotlin/Factories.kt`.
+
+## 🏗️ Building from Source (for Development/Contribution)
+
+If you wish to contribute to `code-to-knowledge-graph` or build it locally:
+
+### Prerequisites
+*   JDK 17 or higher
+
+### Build Steps
+1.  **Clone the repository**:
     ```bash
     git clone https://github.com/Bevel-Software/code-to-knowledge-graph.git
     cd code-to-knowledge-graph
     ```
-
-2.  **Build the project using Gradle:**
+2.  **Build using Gradle**:
+    The project includes a Gradle wrapper (`gradlew`), which will download the correct Gradle version.
     ```bash
     ./gradlew build
     ```
@@ -214,30 +322,24 @@ fun main() {
 
 ## 🤝 Contributing
 
-Contributions are welcome! Whether it's improving the VS Code integration, adding new language-specific handlers, enhancing the graph model, or fixing bugs, your help is appreciated.
+Contributions are welcome! Whether it's bug fixes, feature enhancements, or improvements to documentation, your help is appreciated.
 
-1.  Fork the repository.
-2.  Create your feature branch (`git checkout -b feature/AmazingFeature`).
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4.  Push to the branch (`git push origin feature/AmazingFeature`).
-5.  Open a Pull Request.
+1.  **Fork the repository.**
+2.  **Create a new branch** for your feature or fix.
+3.  **Make your changes.** Adhere to Kotlin coding conventions.
+4.  **Add tests** for any new functionality or bug fixes. Ensure all tests pass: `./gradlew test`.
+5.  **Commit your changes** with clear, descriptive messages.
+6.  **Push to your branch.**
+7.  **Open a Pull Request** against the `main` branch of the original repository.
 
-Please make sure your code adheres to the existing style and that all tests pass.
+Please ensure your PR description clearly explains the changes and their motivations.
 
-## 📜 License
+## 📄 License
 
-This project is licensed under the **Mozilla Public License Version 2.0**. See the `LICENSE` file for details.
+This project is licensed under the **Mozilla Public License Version 2.0**. See the [LICENSE](./LICENSE) file for full details.
+
 The `NOTICE` file contains information about licenses of third-party dependencies.
-
-## 🙏 Acknowledgements
-
-*   The **ANTLR** project for their powerful parser generator (though our ANTLR module is currently deprecated).
-*   The **Dynatrace hash4j** library for MinHash implementation.
-*   The broader **Language Server Protocol (LSP)** community for enabling robust cross-editor language intelligence.
-*   All contributors and users of this project.
 
 ---
 
-<p align="center">
-  Happy Coding & Graphing! 🧑‍💻➡️📊
-</p>
+We hope Code-to-Knowledge-Graph provides a powerful foundation for your code analysis endeavors!

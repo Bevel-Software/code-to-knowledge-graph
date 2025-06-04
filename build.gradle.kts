@@ -47,7 +47,7 @@ licenseReport {
 
 // Define group and version based on root project or use defaults for standalone
 val projectGroup = "software.bevel"
-val projectVersion = "1.1.3"
+val projectVersion = "1.2.0"
 
 group = projectGroup
 version = projectVersion
@@ -62,11 +62,11 @@ dependencies {
     if (rootProject.name == "code-to-knowledge-graph") {
         //api(project(":antlr"))
         //api(project(":regex"))
-        api("$projectGroup:code-to-knowledge-graph-providers:1.1.3")
-        api("$projectGroup:code-to-knowledge-graph-vscode:1.1.3")
-        api("$projectGroup:file-system-domain:1.1.0")
-        api("$projectGroup:graph-domain:1.1.0")
-        api("$projectGroup:networking:1.1.0")
+        api("$projectGroup:code-to-knowledge-graph-providers:1.2.0")
+        api("$projectGroup:code-to-knowledge-graph-vscode:1.2.0")
+        api("$projectGroup:file-system-domain:1.2.0")
+        api("$projectGroup:graph-domain:1.2.0")
+        api("$projectGroup:networking:1.2.0")
     } else {
         //api(project(":code-to-knowledge-graph:antlr"))
         //api(project(":code-to-knowledge-graph:regex"))

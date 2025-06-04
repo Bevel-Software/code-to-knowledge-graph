@@ -47,7 +47,7 @@ licenseReport {
 
 // Define group and version based on root project or use defaults for standalone
 val projectGroup = "software.bevel"
-val projectVersion = "1.1.3"
+val projectVersion = "1.2.0"
 
 group = projectGroup
 version = projectVersion
@@ -60,8 +60,8 @@ dependencies {
     api("org.slf4j:slf4j-api:2.0.17")
     // Handle external module dependencies differently based on whether we're in standalone or multi-project mode
     if (rootProject.name == "code-to-knowledge-graph-vscode") {
-        api("$projectGroup:file-system-domain:1.1.0")
-        api("$projectGroup:graph-domain:1.1.0")
+        api("$projectGroup:file-system-domain:1.2.0")
+        api("$projectGroup:graph-domain:1.2.0")
     } else {
         api(project(":file-system-domain"))
         api(project(":graph-domain"))
@@ -71,7 +71,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.3")
+    testImplementation("ch.qos.logback:logback-classic:1.4.14")
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.3")
     testImplementation("org.mockito:mockito-core:4.0.0")
